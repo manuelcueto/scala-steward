@@ -43,7 +43,8 @@ object NewPullRequestData {
       artifactIdToUrl: Map[String, String],
       branchCompareUrl: Option[String],
       releaseNoteUrl: Option[String],
-      migrations: List[Migration]
+      migrations: List[Migration],
+      oldVersionOccurrences: List[String]
   ): String = {
     val artifacts = artifactsWithOptionalUrl(update, artifactIdToUrl)
     val (migrationLabel, appliedMigrations) = migrationNote(update, migrations)
@@ -60,6 +61,9 @@ object NewPullRequestData {
         |Have a fantastic day writing Scala!
         |
         |${details.map(_.toHtml).mkString("\n")}
+        |
+        |${oldVersionOccurrences.headOption.fold(""){occurrences =>
+         s"The version appears also in the following files: \n ${occurrences.mkString("\n")}"}}
         |
         |${labels.fold("")(_.mkString_("labels: ", ", ", ""))}
         |""".stripMargin.trim

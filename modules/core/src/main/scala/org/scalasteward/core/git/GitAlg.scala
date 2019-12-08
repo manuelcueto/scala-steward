@@ -58,6 +58,8 @@ trait GitAlg[F[_]] {
 
   def syncFork(repo: Repo, upstreamUrl: Uri, defaultBranch: Branch): F[Unit]
 
+  def grep(repo: Repo, version: String): F[List[String]]
+
   final def returnToCurrentBranch[A, E](repo: Repo)(fa: F[A])(implicit F: Bracket[F, E]): F[A] =
     F.bracket(currentBranch(repo))(_ => fa)(checkoutBranch(repo, _))
 }
@@ -176,6 +178,11 @@ object GitAlg {
           _ <- exec(Nel.of("merge", remoteBranch), repoDir)
           _ <- push(repo, defaultBranch)
         } yield ()
+
+        override def grep(repo: Repo, version: String): F[List[String]] = for {
+          repoDir <- workspaceAlg.repoDir(repo)
+          result <- exec(Nel.of("grep", version), repoDir)
+        } yield result
 
       def exec(command: Nel[String], cwd: File): F[List[String]] =
         processAlg.exec(gitCmd :: command, cwd, "GIT_ASKPASS" -> config.gitAskPass.pathAsString)

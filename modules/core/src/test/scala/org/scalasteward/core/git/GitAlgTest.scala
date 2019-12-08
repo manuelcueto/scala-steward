@@ -124,6 +124,16 @@ class GitAlgTest extends AnyFunSuite with Matchers {
     } yield (c1, m1, c2, m2)
     p.unsafeRunSync() shouldBe ((true, false, false, true))
   }
+
+  test("grep") {
+    val versionString = "1.6.0"
+    val state = gitAlg.grep(repo, versionString).runS(MockState.empty).unsafeRunSync
+    state shouldBe MockState.empty.copy(
+      commands = Vector(
+        List(askPass, repoDir, "git", "grep", versionString)
+      )
+    )
+  }
 }
 
 object GitAlgTest {
