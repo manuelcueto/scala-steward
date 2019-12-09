@@ -145,7 +145,8 @@ object NewPullRequestData {
       artifactIdToUrl: Map[String, String] = Map.empty,
       branchCompareUrl: Option[String] = None,
       releaseNoteUrl: Option[String] = None,
-      migrations: List[Migration] = List.empty
+      migrations: List[Migration] = List.empty,
+      oldVersionOccurrences: List[String]
   ): NewPullRequestData =
     NewPullRequestData(
       title = git.commitMsgFor(data.update),
@@ -154,7 +155,8 @@ object NewPullRequestData {
         artifactIdToUrl,
         branchCompareUrl,
         releaseNoteUrl,
-        migrations
+        migrations,
+        oldVersionOccurrences
       ),
       head = branchName,
       base = data.baseBranch
