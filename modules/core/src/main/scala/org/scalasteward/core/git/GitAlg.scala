@@ -179,7 +179,8 @@ object GitAlg {
           _ <- push(repo, defaultBranch)
         } yield ()
 
-        override def grep(repo: Repo, version: String): F[List[String]] = for {
+      override def grep(repo: Repo, version: String): F[List[String]] =
+        for {
           repoDir <- workspaceAlg.repoDir(repo)
           result <- exec(Nel.of("grep", version), repoDir)
         } yield result

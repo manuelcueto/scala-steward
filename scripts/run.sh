@@ -14,12 +14,12 @@ JAR=$(find modules/ -name "scala-steward-assembly*.jar" | head -n1)
 REPOS_FILE="$STEWARD_DIR/public-repos.md"
 curl -o "$REPOS_FILE" https://raw.githubusercontent.com/scala-steward-org/repos/master/repos.md
 
-LOGIN="scala-steward"
+LOGIN="manuelcueto"
 java -DROOT_LOG_LEVEL=INFO -DLOG_LEVEL=INFO -jar ${JAR} \
   --workspace  "$STEWARD_DIR/workspace" \
   --repos-file "$REPOS_FILE" \
   --prune-repos \
-  --git-author-email "me@$LOGIN.org" \
+  --git-author-email "manuelcueto@github.com" \
   --vcs-login ${LOGIN} \
   --git-ask-pass "$HOME/.github/askpass/$LOGIN.sh" \
   --ignore-opts-files \

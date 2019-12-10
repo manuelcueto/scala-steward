@@ -61,10 +61,9 @@ object NewPullRequestData {
         |Have a fantastic day writing Scala!
         |
         |${details.map(_.toHtml).mkString("\n")}
-        |
-        |${oldVersionOccurrences.headOption.fold(""){occurrences =>
-         s"The version appears also in the following files: \n ${occurrences.mkString("\n")}"}}
-        |
+        |${oldVersionOccurrences.headOption.fold("") { _ =>
+         s"\nThe version appears also in the following files:\n ${oldVersionOccurrences.mkString("\n")}\n"
+       }}
         |${labels.fold("")(_.mkString_("labels: ", ", ", ""))}
         |""".stripMargin.trim
   }
@@ -146,7 +145,7 @@ object NewPullRequestData {
       branchCompareUrl: Option[String] = None,
       releaseNoteUrl: Option[String] = None,
       migrations: List[Migration] = List.empty,
-      oldVersionOccurrences: List[String]
+      oldVersionOccurrences: List[String] = List.empty
   ): NewPullRequestData =
     NewPullRequestData(
       title = git.commitMsgFor(data.update),

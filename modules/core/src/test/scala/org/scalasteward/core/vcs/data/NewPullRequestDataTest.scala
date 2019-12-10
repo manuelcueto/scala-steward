@@ -47,6 +47,25 @@ class NewPullRequestDataTest extends AnyFunSuite with Matchers {
       "[from 1.2.0 to 1.2.3](http://example.com/compare/v1.2.0...v1.2.3)"
   }
 
+  test("from with old occurrences") {
+    val data = UpdateData(
+      Repo("foo", "bar"),
+      Repo("scala-steward", "bar"),
+      RepoConfig(),
+      Update.Single(GroupId("ch.qos.logback"), "logback-classic", "1.2.0", Nel.of("1.2.3")),
+      Branch("master"),
+      Sha1(Sha1.HexString("d6b6791d2ea11df1d156fe70979ab8c3a5ba3433")),
+      Branch("update/logback-classic-1.2.3")
+    )
+    NewPullRequestData
+      .from(
+        data,
+        "scala-steward:update/logback-classic-1.2.3",
+        oldVersionOccurrences = List("foobar")
+      )
+      .body shouldBe "Updates ch.qos.logback:logback-classic from 1.2.0 to 1.2.3.\n\n\nI'll automatically update this PR to resolve conflicts as long as you don't change it yourself.\n\nIf you'd like to skip this version, you can just close this PR. If you have any feedback, just mention me in the comments below.\n\nHave a fantastic day writing Scala!\n\n<details>\n<summary>Ignore future updates</summary>\n\nAdd this to your `.scala-steward.conf` file to ignore future updates of this dependency:\n```\nupdates.ignore = [ { groupId = \"ch.qos.logback\", artifactId = \"logback-classic\" } ]\n```\n</details>\n\nThe version appears also in the following files:\n foobar\n\nlabels: semver-patch"
+  }
+
   test("links to release notes/changelog") {
     NewPullRequestData.releaseNote(None) shouldBe None
 
